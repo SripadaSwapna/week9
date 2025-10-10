@@ -1,74 +1,43 @@
 pipeline {
     agent any
 
-    environment {
-        APP_NAME = "flask-app"
-        IMAGE_TAG = "local-${env.BUILD_NUMBER}"
-        IMAGE_NAME = "${APP_NAME}:${IMAGE_TAG}"
-        DEPLOYMENT_NAME = "flask-app-deployment"
-    }
-
     stages {
-
-        stage('Checkout Code') {
-            steps {
-                echo "Fetching source code..."
-                checkout scm
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo "Building Docker image: ${IMAGE_NAME}"
-                    bat "docker build -t ${IMAGE_NAME} ."
-                }
+                echo "Build Docker Image"
+                bat "docker build -t kubdemoapp:v1 ."
             }
         }
 
-stage('Load Image into Kubernetes') {
-    steps {
-        script {
-            echo "Loading Docker image into Minikube..."
-            bat "minikube image load ${IMAGE_NAME}"
+        stage('Docker Login') {
+            steps {
+                bat "docker login -u bhavani765 -p bhanu@123"
+            }
         }
-    }
-}
 
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                echo "push Docker Image to Docker Hub"
+                bat "docker tag kubdemoapp:v1 bhavani765/sample:kubeimage1"
+                bat "docker push bhavani765/sample:kubeimage1"
+            }
+        }
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    echo "Deploying ${IMAGE_NAME} to Kubernetes..."
-                    bat """
-                    kubectl set image deployment/${DEPLOYMENT_NAME} ${APP_NAME}=${IMAGE_NAME} --record || (
-                        kubectl apply -f k8s\\deployment.yaml &&
-                        kubectl apply -f k8s\\service.yaml
-                    )
-                    """
-                }
-            }
-        }
-
-        stage('Verify Deployment') {
-            steps {
-                script {
-                    bat """
-                    kubectl rollout status deployment/${DEPLOYMENT_NAME} --timeout=120s
-                    kubectl get pods -l app=${APP_NAME}
-                    """
-                }
+                // apply deployment & service
+                bat "kubectl apply -f deployment.yaml --validate=false"
+                bat "kubectl apply -f service.yaml"
             }
         }
     }
 
     post {
         success {
-            echo "✅ Deployment successful! Application is live."
-            bat "kubectl get svc flask-app-service"
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo "❌ Deployment failed. Check logs above."
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
