@@ -26,17 +26,15 @@ pipeline {
             }
         }
 
-        stage('Load Image into Kubernetes') {
-            steps {
-                script {
-                    // If using Kind
-                    bat "kind load docker-image ${IMAGE_NAME} || echo Skipping kind load if not applicable"
-
-                    // If using Minikube instead, uncomment this:
-                    // bat 'minikube image load ${IMAGE_NAME}'
-                }
-            }
+stage('Load Image into Kubernetes') {
+    steps {
+        script {
+            echo "Loading Docker image into Minikube..."
+            bat "minikube image load ${IMAGE_NAME}"
         }
+    }
+}
+
 
         stage('Deploy to Kubernetes') {
             steps {
