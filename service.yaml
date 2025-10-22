@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kubdemoapp-service
+  name: erumapp-service
 spec:
   selector:
-    app: kubdemoapp
+    app: erumapp
   ports:
     - protocol: TCP
-      port: 5000
-      targetPort: 5000
-      nodePort: 30088
+      port: 5000       # Service port
+      targetPort: 5000 # Container port
+      nodePort: 30088  # NodePort to access externally
   type: NodePort
