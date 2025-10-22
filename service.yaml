@@ -9,5 +9,5 @@ spec:
     - protocol: TCP
       port: 5000       # Service port
       targetPort: 5000 # Container port
-      nodePort: 30088  # NodePort to access externally
+      # nodePort: 30088  # Remove this line to let Kubernetes pick a free port automatically
   type: NodePort
