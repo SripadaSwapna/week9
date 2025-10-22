@@ -1,19 +1,13 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: erumapp-deployment
+  name: erumapp-service
 spec:
-  replicas: 4
   selector:
-    matchLabels:
-      app: erumapp
-  template:
-    metadata:
-      labels:
-        app: erumapp
-    spec:
-      containers:
-        - name: erumapp
-          image: erumfaiz/erum_repo:v1   # your Docker Hub image
-          ports:
-            - containerPort: 5000
+    app: erumapp
+  ports:
+    - protocol: TCP
+      port: 5000       # Service port
+      targetPort: 5000 # Container port
+      # nodePort: 30088  # Remove this line to let Kubernetes pick a free port automatically
+  type: NodePort
