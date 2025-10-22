@@ -4,28 +4,29 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                echo "Build Docker Image"
-                bat "docker build -t kubdemoapp:v1 ."
+                echo "Building Docker Image"
+                bat "docker build -t erum_repo:v1 ."
             }
         }
 
         stage('Docker Login') {
             steps {
-                bat "docker login -u erumfaiz3005 -p Erum@3005"
+                // Use your Docker Hub credentials
+                bat "docker login -u erumfaiz -p Erum@3005"
             }
         }
 
         stage('Push Docker Image to Docker Hub') {
             steps {
-                echo "push Docker Image to Docker Hub"
-                bat "docker tag kubdemoapp:v1 bhavani765/sample:kubeimage1"
-                bat "docker push bhavani765/sample:kubeimage1"
+                echo "Pushing Docker Image to Docker Hub"
+                bat "docker tag erum_repo:v1 erumfaiz/erum_repo:v1"
+                bat "docker push erumfaiz/erum_repo:v1"
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                // apply deployment & service
+                echo "Deploying to Kubernetes"
                 bat "kubectl apply -f deployment.yaml --validate=false"
                 bat "kubectl apply -f service.yaml"
             }
