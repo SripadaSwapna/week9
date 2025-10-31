@@ -20,7 +20,7 @@ pipeline {
             steps {
                 echo "Pushing Docker Image to Docker Hub"
                 bat "docker tag s_repo:v1 swapna655/s_repo:v1"
-                bat "docker push swapna655/erum_repo:v1"
+                bat "docker push swapna655/s_repo:v1"
             }
         }
 
