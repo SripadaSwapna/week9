@@ -12,7 +12,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 // Use your Docker Hub credentials
-                bat "docker login -u swapna655 -p Swapna655"
+                bat "docker login -u swapna655 -p Swapna@655"
             }
         }
 
